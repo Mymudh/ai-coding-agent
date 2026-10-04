@@ -1,34 +1,33 @@
 ﻿import { useEffect, useMemo, useState } from "react";
 import "./index.css";
-import "./App.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 const features = [
   {
     id: "generate",
-    icon: "âš¡",
+    icon: "⚡",
     title: "Generate Code",
     text: "Describe what you want to build and let the AI create the solution.",
     action: "Generate"
   },
   {
     id: "analyze",
-    icon: "âŒ•",
+    icon: "⌕",
     title: "Analyze Code",
     text: "Review code for bugs, quality issues, performance and improvements.",
     action: "Analyze"
   },
   {
     id: "fix",
-    icon: "âœ¦",
+    icon: "✦",
     title: "Fix Errors",
     text: "Paste an error or broken code and get an intelligent correction.",
     action: "Fix Code"
   },
   {
     id: "build",
-    icon: "ðŸš€",
+    icon: "🚀",
     title: "Build Faster",
     text: "Turn ideas into working applications with an AI coding workflow.",
     action: "Generate"
@@ -91,19 +90,6 @@ function App() {
   useEffect(() => {
     checkBackend();
 
-    let scrollTimer;
-
-    const handleScroll = () => {
-      document.documentElement.classList.add("is-scrolling");
-
-      window.clearTimeout(scrollTimer);
-      scrollTimer = window.setTimeout(() => {
-        document.documentElement.classList.remove("is-scrolling");
-      }, 120);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
     const handleKey = (event) => {
       if (
         (event.ctrlKey || event.metaKey) &&
@@ -127,9 +113,6 @@ function App() {
 
     return () => {
       window.removeEventListener("keydown", handleKey);
-      window.removeEventListener("scroll", handleScroll);
-      window.clearTimeout(scrollTimer);
-      document.documentElement.classList.remove("is-scrolling");
     };
   }, []);
 
@@ -349,7 +332,1431 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
 
   return (
     <div className="app">
-      
+      <style>{`
+        .workspace-section.enhanced-workspace {
+          position: relative;
+          overflow: hidden;
+        }
+
+        .workspace-section.enhanced-workspace::before {
+          content: "";
+          position: absolute;
+          width: 520px;
+          height: 520px;
+          right: -240px;
+          top: 100px;
+          border-radius: 50%;
+          background: radial-gradient(
+            circle,
+            rgba(91, 92, 255, 0.16),
+            transparent 68%
+          );
+          pointer-events: none;
+        }
+
+        .workspace-section.enhanced-workspace::after {
+          content: "";
+          position: absolute;
+          width: 420px;
+          height: 420px;
+          left: -240px;
+          bottom: 80px;
+          border-radius: 50%;
+          background: radial-gradient(
+            circle,
+            rgba(49, 130, 246, 0.10),
+            transparent 70%
+          );
+          pointer-events: none;
+        }
+
+        .enhanced-workspace .workspace-top {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          gap: 30px;
+          margin-bottom: 28px;
+        }
+
+        .enhanced-workspace .workspace-top h2 {
+          font-size: clamp(38px, 5vw, 64px);
+          line-height: 1.02;
+          letter-spacing: -0.045em;
+          margin: 10px 0 14px;
+        }
+
+        .enhanced-workspace .workspace-top p {
+          max-width: 720px;
+          font-size: 17px;
+          line-height: 1.7;
+        }
+
+        .workspace-actions {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          flex-shrink: 0;
+        }
+
+        .workspace-status-pill {
+          display: flex;
+          align-items: center;
+          gap: 9px;
+          min-height: 40px;
+          padding: 0 14px;
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 999px;
+          background: rgba(8, 12, 25, 0.72);
+          color: #8e9bb8;
+          font-size: 12px;
+          font-weight: 600;
+        }
+
+        .workspace-status-pill .status-indicator {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #f04f67;
+          box-shadow: 0 0 12px rgba(240,79,103,.65);
+        }
+
+        .workspace-status-pill.online .status-indicator {
+          background: #34d399;
+          box-shadow: 0 0 14px rgba(52,211,153,.7);
+        }
+
+        .workspace-clear {
+          min-height: 40px;
+          padding: 0 15px;
+          border-radius: 10px;
+          border: 1px solid rgba(255,255,255,0.08);
+          background: rgba(8, 12, 25, 0.8);
+          color: #aeb8cd;
+          cursor: pointer;
+          transition: .2s ease;
+        }
+
+        .workspace-clear:hover {
+          color: white;
+          border-color: rgba(105,126,255,.5);
+          transform: translateY(-1px);
+        }
+
+        .professional-workspace-card {
+          position: relative;
+          z-index: 3;
+          display: grid;
+          grid-template-columns: 220px minmax(0, 1fr);
+          min-height: 720px;
+          overflow: hidden;
+          border: 1px solid rgba(120,140,190,.18);
+          border-radius: 24px;
+          background:
+            linear-gradient(
+              145deg,
+              rgba(13,19,36,.98),
+              rgba(5,9,20,.98)
+            );
+          box-shadow:
+            0 35px 100px rgba(0,0,0,.38),
+            inset 0 1px 0 rgba(255,255,255,.035);
+          backdrop-filter: blur(22px);
+        }
+
+        .professional-sidebar {
+          padding: 22px 15px;
+          border-right: 1px solid rgba(255,255,255,.07);
+          background: rgba(6,10,22,.72);
+        }
+
+        .professional-sidebar-label {
+          padding: 4px 12px 13px;
+          color: #61708d;
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: .18em;
+        }
+
+        .professional-tab {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          min-height: 48px;
+          margin-bottom: 7px;
+          padding: 0 13px;
+          border: 1px solid transparent;
+          border-radius: 12px;
+          background: transparent;
+          color: #8e9bb5;
+          text-align: left;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: .22s ease;
+        }
+
+        .professional-tab:hover {
+          color: #e8edff;
+          background: rgba(91,92,255,.08);
+        }
+
+        .professional-tab.active {
+          color: white;
+          border-color: rgba(101,115,255,.22);
+          background:
+            linear-gradient(
+              135deg,
+              rgba(88,92,255,.20),
+              rgba(69,117,255,.08)
+            );
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.04),
+            0 8px 25px rgba(49,72,190,.12);
+        }
+
+        .professional-tab-icon {
+          width: 30px;
+          height: 30px;
+          display: grid;
+          place-items: center;
+          border-radius: 9px;
+          background: rgba(255,255,255,.045);
+          font-size: 14px;
+        }
+
+        .professional-tab.active .professional-tab-icon {
+          background: linear-gradient(135deg,#6675ff,#8b5cf6);
+          box-shadow: 0 7px 20px rgba(91,92,255,.28);
+        }
+
+        .professional-divider {
+          height: 1px;
+          margin: 20px 10px;
+          background: rgba(255,255,255,.07);
+        }
+
+        .professional-example {
+          width: 100%;
+          padding: 9px 12px;
+          border: 0;
+          border-radius: 9px;
+          background: transparent;
+          color: #66738e;
+          text-align: left;
+          font-size: 11px;
+          line-height: 1.5;
+          cursor: pointer;
+          transition: .2s ease;
+        }
+
+        .professional-example:hover {
+          color: #c9d2e9;
+          background: rgba(255,255,255,.035);
+        }
+
+        .professional-main {
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .professional-toolbar {
+          min-height: 66px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 15px;
+          padding: 0 22px;
+          border-bottom: 1px solid rgba(255,255,255,.07);
+          background: rgba(7,11,24,.72);
+        }
+
+        .toolbar-left,
+        .toolbar-right {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .toolbar-title {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          color: #e9edff;
+          font-size: 14px;
+          font-weight: 700;
+        }
+
+        .toolbar-live {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #60a5fa;
+          box-shadow: 0 0 12px rgba(96,165,250,.75);
+          animation: workspacePulse 2s infinite;
+        }
+
+        .toolbar-chip {
+          padding: 6px 9px;
+          border: 1px solid rgba(255,255,255,.08);
+          border-radius: 7px;
+          background: rgba(255,255,255,.035);
+          color: #71809d;
+          font-size: 10px;
+          font-weight: 700;
+        }
+
+        .toolbar-model {
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          padding: 7px 11px;
+          border: 1px solid rgba(255,255,255,.08);
+          border-radius: 8px;
+          background: #0b1122;
+          color: #aab6cf;
+          font-size: 11px;
+        }
+
+        .workspace-editor {
+          padding: 24px;
+          border-bottom: 1px solid rgba(255,255,255,.07);
+        }
+
+        .editor-topline {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 13px;
+        }
+
+        .editor-label {
+          color: #7181a2;
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: .17em;
+        }
+
+        .editor-hint {
+          color: #56637d;
+          font-size: 10px;
+        }
+
+        .professional-textarea {
+          width: 100%;
+          min-height: 245px;
+          resize: vertical;
+          padding: 22px;
+          border: 1px solid rgba(112,131,177,.18);
+          border-radius: 15px;
+          outline: none;
+          background:
+            linear-gradient(
+              180deg,
+              rgba(4,8,18,.95),
+              rgba(7,11,23,.9)
+            );
+          color: #eaf0ff;
+          font-family: "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+          font-size: 14px;
+          line-height: 1.8;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.025),
+            0 10px 35px rgba(0,0,0,.16);
+          transition: .2s ease;
+        }
+
+        .professional-textarea::placeholder {
+          color: #46536d;
+        }
+
+        .professional-textarea:focus {
+          border-color: rgba(99,111,255,.58);
+          box-shadow:
+            0 0 0 3px rgba(91,92,255,.08),
+            inset 0 1px 0 rgba(255,255,255,.025);
+        }
+
+        .editor-footer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          margin-top: 12px;
+        }
+
+        .editor-info {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          color: #53617c;
+          font-size: 11px;
+        }
+
+        .run-agent-button {
+          min-width: 145px;
+          min-height: 45px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 9px;
+          padding: 0 18px;
+          border: 0;
+          border-radius: 11px;
+          background: linear-gradient(135deg,#5d73ff,#7958ed);
+          color: white;
+          font-size: 13px;
+          font-weight: 800;
+          cursor: pointer;
+          box-shadow:
+            0 12px 30px rgba(79,83,220,.28),
+            inset 0 1px 0 rgba(255,255,255,.2);
+          transition: .22s ease;
+        }
+
+        .run-agent-button:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow:
+            0 17px 35px rgba(79,83,220,.36),
+            inset 0 1px 0 rgba(255,255,255,.2);
+        }
+
+        .run-agent-button:disabled {
+          opacity: .65;
+          cursor: wait;
+        }
+
+        .response-panel {
+          flex: 1;
+          min-height: 320px;
+          display: flex;
+          flex-direction: column;
+          padding: 20px 24px 24px;
+        }
+
+        .response-panel-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 12px;
+        }
+
+        .response-label {
+          display: flex;
+          align-items: center;
+          gap: 9px;
+          color: #7282a3;
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: .16em;
+        }
+
+        .response-live {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #a78bfa;
+          box-shadow: 0 0 12px rgba(167,139,250,.7);
+        }
+
+        .response-copy {
+          padding: 7px 11px;
+          border: 1px solid rgba(255,255,255,.08);
+          border-radius: 8px;
+          background: rgba(255,255,255,.025);
+          color: #687590;
+          font-size: 10px;
+          cursor: pointer;
+        }
+
+        .response-copy:hover {
+          color: white;
+          border-color: rgba(112,128,255,.35);
+        }
+
+        .professional-response-box {
+          flex: 1;
+          min-height: 250px;
+          overflow: auto;
+          padding: 22px;
+          border: 1px solid rgba(112,131,177,.14);
+          border-radius: 15px;
+          background: #050913;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
+        }
+
+        .professional-response-box pre {
+          margin: 0;
+          white-space: pre-wrap;
+          word-break: break-word;
+          color: #cbd5e1;
+          font-family: "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+          font-size: 13px;
+          line-height: 1.75;
+        }
+
+        .workspace-empty {
+          height: 100%;
+          min-height: 245px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          text-align: center;
+          gap: 10px;
+          color: #55627c;
+        }
+
+        .workspace-empty-orb {
+          width: 55px;
+          height: 55px;
+          display: grid;
+          place-items: center;
+          margin-bottom: 5px;
+          border: 1px solid rgba(112,128,255,.22);
+          border-radius: 17px;
+          background:
+            radial-gradient(
+              circle at 30% 25%,
+              rgba(130,143,255,.4),
+              rgba(76,65,185,.16)
+            );
+          color: #b9c1ff;
+          font-weight: 900;
+          box-shadow: 0 0 40px rgba(84,88,255,.12);
+        }
+
+        .workspace-empty strong {
+          color: #b8c2d8;
+          font-size: 13px;
+        }
+
+        .workspace-empty span {
+          max-width: 420px;
+          color: #53617b;
+          font-size: 11px;
+          line-height: 1.6;
+        }
+
+        .workspace-loading {
+          height: 100%;
+          min-height: 245px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 17px;
+        }
+
+        .workspace-loading-orb {
+          width: 52px;
+          height: 52px;
+          position: relative;
+          display: grid;
+          place-items: center;
+          border-radius: 16px;
+          background: linear-gradient(135deg,#6275ff,#7958ec);
+          color: white;
+          font-weight: 900;
+          box-shadow: 0 0 35px rgba(99,102,241,.3);
+          animation: workspaceFloat 1.7s ease-in-out infinite;
+        }
+
+        .workspace-loading-orb::before,
+        .workspace-loading-orb::after {
+          content: "";
+          position: absolute;
+          inset: -7px;
+          border: 1px solid rgba(104,115,255,.28);
+          border-radius: 19px;
+          animation: workspaceRing 1.7s linear infinite;
+        }
+
+        .workspace-loading-orb::after {
+          inset: -14px;
+          opacity: .5;
+          animation-delay: .35s;
+        }
+
+        .workspace-loading-copy strong {
+          display: block;
+          color: #dce4fa;
+          font-size: 13px;
+          margin-bottom: 5px;
+        }
+
+        .workspace-loading-copy span {
+          color: #5d6a84;
+          font-size: 11px;
+        }
+
+        .workspace-template-row {
+          display: flex;
+          gap: 8px;
+          overflow-x: auto;
+          padding: 1px 0 2px;
+          margin-top: 13px;
+        }
+
+        .workspace-template {
+          flex-shrink: 0;
+          padding: 8px 11px;
+          border: 1px solid rgba(255,255,255,.07);
+          border-radius: 8px;
+          background: rgba(255,255,255,.025);
+          color: #67748e;
+          font-size: 10px;
+          cursor: pointer;
+          transition: .2s ease;
+        }
+
+        .workspace-template:hover {
+          color: #c8d1e6;
+          border-color: rgba(101,116,255,.3);
+          background: rgba(101,116,255,.06);
+        }
+
+        @keyframes workspacePulse {
+          0%,100% {
+            opacity: .55;
+            transform: scale(.85);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.15);
+          }
+        }
+
+        @keyframes workspaceFloat {
+          0%,100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-6px);
+          }
+        }
+
+        @keyframes workspaceRing {
+          0% {
+            transform: scale(.8);
+            opacity: .7;
+          }
+          100% {
+            transform: scale(1.15);
+            opacity: 0;
+          }
+        }
+
+        @media (max-width: 900px) {
+          .professional-workspace-card {
+            grid-template-columns: 1fr;
+          }
+
+          .professional-sidebar {
+            border-right: 0;
+            border-bottom: 1px solid rgba(255,255,255,.07);
+          }
+
+          .professional-sidebar .professional-example {
+            display: none;
+          }
+
+          .professional-sidebar-label {
+            display: none;
+          }
+
+          .professional-sidebar {
+            display: flex;
+            gap: 7px;
+            padding: 12px;
+          }
+
+          .professional-tab {
+            margin: 0;
+            justify-content: center;
+          }
+
+          .professional-tab span:last-child {
+            display: none;
+          }
+
+          .professional-divider {
+            display: none;
+          }
+
+          .enhanced-workspace .workspace-top {
+            align-items: flex-start;
+            flex-direction: column;
+          }
+        }
+
+        @media (max-width: 620px) {
+          .professional-toolbar {
+            padding: 0 14px;
+          }
+
+          .toolbar-chip {
+            display: none;
+          }
+
+          .toolbar-model {
+            font-size: 10px;
+          }
+
+          .workspace-editor,
+          .response-panel {
+            padding-left: 14px;
+            padding-right: 14px;
+          }
+
+          .editor-footer {
+            align-items: flex-start;
+            flex-direction: column;
+          }
+
+          .run-agent-button {
+            width: 100%;
+          }
+
+          .workspace-actions {
+            width: 100%;
+          }
+
+          .workspace-status-pill {
+            flex: 1;
+          }
+
+          .workspace-clear {
+            flex-shrink: 0;
+          }
+        }
+
+
+        /* Requested workspace-only visual enhancements */
+        .enhanced-workspace .workspace-top h2 {
+          font-size: clamp(48px, 6vw, 78px) !important;
+          line-height: .98 !important;
+          letter-spacing: -0.055em !important;
+          font-weight: 900 !important;
+          text-wrap: balance;
+          text-shadow: 0 12px 45px rgba(0,0,0,.28);
+        }
+
+        .enhanced-workspace .workspace-top p {
+          font-size: 18px !important;
+          color: #8796b5 !important;
+        }
+
+        .professional-workspace-card {
+          isolation: isolate;
+          transform: perspective(1800px) rotateX(.35deg);
+          transform-style: preserve-3d;
+          border-color: rgba(117,139,255,.22) !important;
+          box-shadow:
+            0 42px 120px rgba(0,0,0,.45),
+            0 0 0 1px rgba(100,124,255,.05),
+            inset 0 1px 0 rgba(255,255,255,.05) !important;
+        }
+
+        .professional-workspace-card::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: -1;
+          pointer-events: none;
+          opacity: .52;
+          background-image:
+            linear-gradient(rgba(91,126,255,.055) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(91,126,255,.055) 1px, transparent 1px);
+          background-size: 42px 42px;
+          transform: perspective(900px) rotateX(58deg) translateY(22%);
+          transform-origin: bottom center;
+          mask-image: linear-gradient(to top, rgba(0,0,0,.9), transparent 72%);
+        }
+
+        .professional-workspace-card::after {
+          content: "";
+          position: absolute;
+          left: 8%;
+          right: 8%;
+          top: 0;
+          height: 2px;
+          z-index: 8;
+          pointer-events: none;
+          background: linear-gradient(90deg, transparent, rgba(95,144,255,.9), rgba(164,111,255,.9), transparent);
+          box-shadow: 0 0 22px rgba(91,124,255,.42);
+          animation: workspaceScanLine 5s ease-in-out infinite;
+        }
+
+        .professional-main,
+        .professional-sidebar {
+          position: relative;
+          z-index: 2;
+        }
+
+        .professional-tab,
+        .professional-example,
+        .workspace-template,
+        .run-agent-button,
+        .workspace-clear,
+        .response-copy {
+          -webkit-tap-highlight-color: transparent;
+        }
+
+        .professional-tab:hover {
+          transform: translateX(4px);
+        }
+
+        .professional-textarea {
+          min-height: 255px !important;
+          background:
+            linear-gradient(rgba(91,126,255,.028) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(91,126,255,.028) 1px, transparent 1px),
+            linear-gradient(180deg, rgba(4,8,18,.97), rgba(7,11,23,.94)) !important;
+          background-size: 28px 28px, 28px 28px, auto !important;
+        }
+
+        .search-section {
+          padding: 46px 9% 72px !important;
+          position: relative;
+          z-index: 20;
+        }
+
+        .search-heading {
+          max-width: 680px;
+          margin: 0 auto 18px;
+          text-align: center;
+        }
+
+        .search-heading h2 {
+          margin: 8px 0 0 !important;
+          font-size: clamp(28px, 3vw, 42px) !important;
+          line-height: 1.05 !important;
+          font-weight: 850 !important;
+          letter-spacing: -.035em !important;
+        }
+
+        .search-wrapper {
+          width: min(620px, 100%);
+          height: 52px;
+          margin: 0 auto;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 0 10px 0 14px;
+          position: relative;
+          border: 1px solid rgba(117,139,255,.22);
+          border-radius: 14px;
+          background: linear-gradient(145deg, rgba(13,19,36,.94), rgba(6,10,21,.96));
+          box-shadow:
+            0 18px 55px rgba(0,0,0,.28),
+            0 0 0 1px rgba(255,255,255,.025) inset,
+            0 8px 0 rgba(19,29,58,.38);
+          transform: perspective(900px) rotateX(1.5deg);
+          transition: border-color .22s ease, box-shadow .22s ease, transform .22s ease;
+        }
+
+        .search-wrapper::before {
+          content: "";
+          position: absolute;
+          left: 12%;
+          right: 12%;
+          bottom: -9px;
+          height: 12px;
+          border-radius: 50%;
+          background: radial-gradient(ellipse, rgba(88,111,255,.22), transparent 70%);
+          filter: blur(6px);
+          pointer-events: none;
+          z-index: -1;
+        }
+
+        .search-wrapper:focus-within {
+          border-color: rgba(111,137,255,.62);
+          transform: perspective(900px) rotateX(0deg) translateY(-2px);
+          box-shadow:
+            0 24px 65px rgba(0,0,0,.35),
+            0 0 0 3px rgba(91,92,255,.08),
+            inset 0 1px 0 rgba(255,255,255,.05);
+        }
+
+        .search-icon {
+          width: 28px;
+          height: 28px;
+          display: grid;
+          place-items: center;
+          flex: 0 0 28px;
+          border: 1px solid rgba(103,135,255,.18);
+          border-radius: 8px;
+          background: rgba(84,111,221,.10);
+          color: #79a0ff;
+          font-size: 17px !important;
+        }
+
+        .search-wrapper input {
+          min-width: 0;
+          flex: 1;
+          height: 100%;
+          border: 0;
+          outline: 0;
+          background: transparent;
+          color: #eaf0ff;
+          font-size: 13px;
+          font-weight: 550;
+        }
+
+        .search-wrapper input::placeholder {
+          color: #5e6d8a;
+        }
+
+        .search-shortcut {
+          padding: 5px 8px !important;
+          border: 1px solid rgba(255,255,255,.08) !important;
+          border-radius: 7px !important;
+          background: rgba(255,255,255,.025) !important;
+          color: #697791 !important;
+          font-size: 9px !important;
+          white-space: nowrap;
+        }
+
+        .search-clear {
+          width: 26px;
+          height: 26px;
+          display: grid;
+          place-items: center;
+          border: 0;
+          border-radius: 7px;
+          background: transparent;
+          color: #71809b;
+          cursor: pointer;
+          font-size: 17px;
+        }
+
+        .search-clear:hover {
+          color: white;
+          background: rgba(255,255,255,.05);
+        }
+
+        .search-results {
+          width: min(620px, 100%);
+          max-height: 360px;
+          overflow: auto;
+          margin: 10px auto 0;
+          padding: 8px;
+          border: 1px solid rgba(117,139,255,.18);
+          border-radius: 14px;
+          background: rgba(6,10,21,.97);
+          box-shadow: 0 25px 80px rgba(0,0,0,.42);
+          backdrop-filter: blur(20px);
+        }
+
+        .search-results-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 7px 9px 9px;
+          color: #61708d;
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: .12em;
+          font-weight: 800;
+        }
+
+        .search-results-top button {
+          border: 0;
+          background: transparent;
+          color: #6f7d98;
+          font-size: 10px;
+          cursor: pointer;
+        }
+
+        .search-result {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px;
+          border: 1px solid transparent;
+          border-radius: 10px;
+          background: transparent;
+          color: white;
+          text-align: left;
+          cursor: pointer;
+          transition: .18s ease;
+        }
+
+        .search-result:hover {
+          border-color: rgba(102,125,255,.16);
+          background: rgba(91,110,255,.08);
+          transform: translateX(2px);
+        }
+
+        .result-icon {
+          width: 28px;
+          height: 28px;
+          display: grid;
+          place-items: center;
+          flex: 0 0 28px;
+          border-radius: 8px;
+          background: rgba(88,108,219,.12);
+          color: #7d9fff;
+          font-size: 12px;
+        }
+
+        .result-content {
+          min-width: 0;
+          flex: 1;
+        }
+
+        .result-content strong,
+        .result-content small {
+          display: block;
+        }
+
+        .result-content strong {
+          overflow: hidden;
+          color: #dce5fb;
+          font-size: 12px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+
+        .result-content small {
+          overflow: hidden;
+          margin-top: 3px;
+          color: #61708d;
+          font-size: 10px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+
+        .result-arrow {
+          color: #6f91ff;
+          font-size: 14px;
+        }
+
+        .no-results {
+          padding: 34px 16px;
+          text-align: center;
+          color: #63708a;
+        }
+
+        .no-results > div {
+          width: 34px;
+          height: 34px;
+          margin: 0 auto 10px;
+          display: grid;
+          place-items: center;
+          border-radius: 10px;
+          background: rgba(88,108,219,.10);
+          color: #7193ff;
+        }
+
+        .no-results strong,
+        .no-results span {
+          display: block;
+        }
+
+        .no-results strong {
+          color: #aab6cf;
+          font-size: 12px;
+        }
+
+        .no-results span {
+          margin-top: 5px;
+          font-size: 10px;
+        }
+
+        @keyframes workspaceScanLine {
+          0%, 100% { transform: translateX(-10%); opacity: .25; }
+          50% { transform: translateX(10%); opacity: 1; }
+        }
+
+        @media (max-width: 900px) {
+          .enhanced-workspace .workspace-top h2 {
+            font-size: clamp(42px, 8vw, 62px) !important;
+          }
+
+          .professional-workspace-card {
+            transform: none;
+          }
+        }
+
+        @media (max-width: 620px) {
+          .enhanced-workspace .workspace-top h2 {
+            font-size: 42px !important;
+          }
+
+          .search-section {
+            padding-left: 5% !important;
+            padding-right: 5% !important;
+          }
+
+          .search-wrapper {
+            height: 50px;
+          }
+
+          .search-shortcut {
+            display: none;
+          }
+        }
+      `}</style>
+
+      <style>{`
+        /* WORKSPACE-ONLY VISUAL UPGRADE — no other sections changed */
+        .enhanced-workspace {
+          position: relative;
+          isolation: isolate;
+          overflow: visible !important;
+        }
+
+        .enhanced-workspace::before {
+          content: "";
+          position: absolute;
+          left: 50%;
+          top: 170px;
+          width: min(1180px, 92%);
+          height: 650px;
+          transform: translateX(-50%);
+          pointer-events: none;
+          border-radius: 50%;
+          background: radial-gradient(ellipse at center, rgba(79,103,255,.14), transparent 68%);
+          filter: blur(22px);
+          z-index: -3;
+        }
+
+        .enhanced-workspace::after {
+          content: "";
+          position: absolute;
+          left: 50%;
+          bottom: 25px;
+          width: min(1120px, 88%);
+          height: 190px;
+          transform: translateX(-50%) perspective(900px) rotateX(72deg);
+          transform-origin: center bottom;
+          pointer-events: none;
+          opacity: .72;
+          background-image:
+            linear-gradient(rgba(88,126,255,.10) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(88,126,255,.10) 1px, transparent 1px);
+          background-size: 44px 44px;
+          mask-image: linear-gradient(to top, rgba(0,0,0,.95), transparent 88%);
+          z-index: -2;
+          animation: workspaceFloorDrift 10s linear infinite;
+        }
+
+        .enhanced-workspace .workspace-top {
+          position: relative;
+          z-index: 5;
+          margin-bottom: 42px !important;
+        }
+
+        .enhanced-workspace .workspace-top > div:first-child {
+          position: relative;
+        }
+
+        .enhanced-workspace .workspace-top > div:first-child::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          bottom: -24px;
+          width: 180px;
+          height: 2px;
+          border-radius: 999px;
+          background: linear-gradient(90deg, #5b8cff, #8b5cf6, transparent);
+          box-shadow: 0 0 20px rgba(96,115,255,.55);
+          animation: workspaceHeadingLine 3.5s ease-in-out infinite;
+        }
+
+        .enhanced-workspace .workspace-top h2 {
+          max-width: 980px !important;
+          margin: 13px 0 17px !important;
+          font-family: "Space Grotesk", sans-serif !important;
+          font-size: clamp(58px, 7vw, 92px) !important;
+          line-height: .94 !important;
+          font-weight: 800 !important;
+          letter-spacing: -.065em !important;
+          background: linear-gradient(100deg, #f8fafc 18%, #a9c0ff 52%, #9b7cff 82%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent !important;
+          text-shadow: 0 20px 60px rgba(69,91,190,.14);
+        }
+
+        .enhanced-workspace .workspace-top p {
+          max-width: 760px !important;
+          margin: 0 !important;
+          font-size: 18px !important;
+          line-height: 1.75 !important;
+          color: #8998b7 !important;
+        }
+
+        .workspace-actions {
+          position: relative;
+          z-index: 5;
+        }
+
+        .professional-workspace-card {
+          position: relative !important;
+          min-height: 760px !important;
+          grid-template-columns: 245px minmax(0, 1fr) !important;
+          border-radius: 26px !important;
+          border: 1px solid rgba(121,145,255,.28) !important;
+          background:
+            linear-gradient(145deg, rgba(15,23,45,.98), rgba(5,9,20,.985)) !important;
+          box-shadow:
+            0 55px 130px rgba(0,0,0,.48),
+            0 0 80px rgba(73,94,255,.08),
+            inset 0 1px 0 rgba(255,255,255,.07) !important;
+          transform: perspective(1900px) rotateX(.7deg) translateZ(0);
+          transform-style: preserve-3d;
+        }
+
+        .professional-workspace-card::before {
+          content: "";
+          position: absolute;
+          inset: -1px;
+          z-index: 0;
+          pointer-events: none;
+          border-radius: 26px;
+          background:
+            linear-gradient(90deg, transparent 0%, rgba(84,130,255,.10) 50%, transparent 100%);
+          opacity: .55;
+          animation: workspaceBorderGlow 5s ease-in-out infinite;
+        }
+
+        .professional-workspace-card::after {
+          content: "";
+          position: absolute;
+          left: 4%;
+          right: 4%;
+          top: 0;
+          height: 2px;
+          z-index: 9;
+          pointer-events: none;
+          border-radius: 999px;
+          background: linear-gradient(90deg, transparent, #4f8cff 25%, #9b6dff 50%, #4f8cff 75%, transparent);
+          box-shadow: 0 0 24px rgba(93,127,255,.7);
+          animation: workspaceScan 4.8s ease-in-out infinite;
+        }
+
+        .professional-sidebar,
+        .professional-main {
+          position: relative;
+          z-index: 3;
+        }
+
+        .professional-sidebar {
+          padding: 28px 17px !important;
+          background: linear-gradient(180deg, rgba(10,16,32,.88), rgba(5,10,21,.72)) !important;
+          border-right: 1px solid rgba(120,143,206,.13) !important;
+        }
+
+        .professional-sidebar::after {
+          content: "";
+          position: absolute;
+          right: -1px;
+          top: 12%;
+          width: 1px;
+          height: 76%;
+          background: linear-gradient(transparent, rgba(91,133,255,.75), rgba(157,104,255,.65), transparent);
+          box-shadow: 0 0 15px rgba(94,126,255,.45);
+        }
+
+        .professional-tab {
+          min-height: 54px !important;
+          border-radius: 13px !important;
+          font-size: 14px !important;
+          letter-spacing: -.01em;
+        }
+
+        .professional-tab:hover {
+          transform: translateX(5px) !important;
+        }
+
+        .professional-main {
+          min-width: 0;
+          background: linear-gradient(180deg, rgba(9,14,28,.62), rgba(4,8,18,.84));
+        }
+
+        .professional-toolbar {
+          min-height: 70px !important;
+          padding: 0 25px !important;
+          background: linear-gradient(180deg, rgba(11,17,33,.92), rgba(7,12,25,.75)) !important;
+          border-bottom: 1px solid rgba(121,143,203,.13) !important;
+        }
+
+        .toolbar-title {
+          font-size: 15px !important;
+        }
+
+        .workspace-editor {
+          position: relative;
+          padding: 28px 29px 24px !important;
+          background:
+            linear-gradient(rgba(87,123,255,.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(87,123,255,.025) 1px, transparent 1px);
+          background-size: 34px 34px;
+          border-bottom: 1px solid rgba(121,143,203,.10) !important;
+        }
+
+        .workspace-editor::before {
+          content: "";
+          position: absolute;
+          left: 30px;
+          right: 30px;
+          top: 0;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(92,133,255,.5), transparent);
+        }
+
+        .editor-label {
+          font-size: 10px !important;
+          letter-spacing: .2em !important;
+        }
+
+        .editor-hint {
+          font-size: 10px !important;
+        }
+
+        .professional-textarea {
+          min-height: 270px !important;
+          border-radius: 17px !important;
+          border-color: rgba(112,137,198,.23) !important;
+          background:
+            linear-gradient(rgba(91,126,255,.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(91,126,255,.035) 1px, transparent 1px),
+            linear-gradient(180deg, rgba(3,7,16,.98), rgba(7,11,23,.96)) !important;
+          background-size: 30px 30px, 30px 30px, auto !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.035),
+            0 18px 55px rgba(0,0,0,.22) !important;
+          font-size: 14px !important;
+        }
+
+        .workspace-template {
+          border-radius: 9px !important;
+          font-size: 10px !important;
+        }
+
+        .run-agent-button {
+          min-height: 48px !important;
+          min-width: 158px !important;
+          border-radius: 12px !important;
+          font-size: 13px !important;
+          box-shadow: 0 16px 38px rgba(79,83,220,.32), inset 0 1px 0 rgba(255,255,255,.2) !important;
+        }
+
+        .response-panel {
+          padding: 22px 29px 29px !important;
+          background: rgba(3,7,16,.28);
+        }
+
+        .professional-response-box {
+          min-height: 270px !important;
+          border-radius: 17px !important;
+          border-color: rgba(112,137,198,.18) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.025), 0 20px 55px rgba(0,0,0,.18) !important;
+        }
+
+        .workspace-empty-orb {
+          width: 66px !important;
+          height: 66px !important;
+          border-radius: 20px !important;
+          font-size: 16px !important;
+          animation: workspaceAIOrb 3.2s ease-in-out infinite;
+        }
+
+        .workspace-empty strong {
+          font-size: 14px !important;
+        }
+
+        .workspace-empty span {
+          font-size: 11px !important;
+        }
+
+        .search-section {
+          padding-top: 54px !important;
+        }
+
+        .search-heading h2 {
+          font-size: clamp(28px, 3vw, 40px) !important;
+          font-weight: 800 !important;
+        }
+
+        .search-wrapper {
+          width: min(560px, 100%) !important;
+          height: 50px !important;
+          border-radius: 13px !important;
+        }
+
+        .search-wrapper::after {
+          content: "";
+          position: absolute;
+          left: 18%;
+          right: 18%;
+          bottom: -7px;
+          height: 7px;
+          border-radius: 50%;
+          background: radial-gradient(ellipse, rgba(91,120,255,.24), transparent 70%);
+          filter: blur(5px);
+          pointer-events: none;
+          z-index: -1;
+        }
+
+        @keyframes workspaceScan {
+          0%, 100% { transform: translateX(-18%); opacity: .35; }
+          50% { transform: translateX(18%); opacity: 1; }
+        }
+
+        @keyframes workspaceBorderGlow {
+          0%, 100% { opacity: .28; transform: translateX(-8%); }
+          50% { opacity: .7; transform: translateX(8%); }
+        }
+
+        @keyframes workspaceHeadingLine {
+          0%, 100% { width: 120px; opacity: .55; }
+          50% { width: 230px; opacity: 1; }
+        }
+
+        @keyframes workspaceFloorDrift {
+          from { background-position: 0 0, 0 0; }
+          to { background-position: 0 44px, 44px 0; }
+        }
+
+        @keyframes workspaceAIOrb {
+          0%, 100% { transform: translateY(0) rotate(0deg); box-shadow: 0 0 30px rgba(84,88,255,.18); }
+          50% { transform: translateY(-7px) rotate(2deg); box-shadow: 0 0 55px rgba(84,88,255,.38); }
+        }
+
+        @media (max-width: 900px) {
+          .professional-workspace-card {
+            grid-template-columns: 1fr !important;
+            transform: none !important;
+          }
+
+          .enhanced-workspace .workspace-top h2 {
+            font-size: clamp(48px, 9vw, 70px) !important;
+          }
+        }
+
+        @media (max-width: 620px) {
+          .enhanced-workspace .workspace-top h2 {
+            font-size: 44px !important;
+          }
+
+          .professional-toolbar {
+            padding: 0 14px !important;
+          }
+
+          .workspace-editor,
+          .response-panel {
+            padding-left: 14px !important;
+            padding-right: 14px !important;
+          }
+        }
+      `}</style>
 
       <div className="background-grid" />
       <div className="ambient ambient-one" />
@@ -416,7 +1823,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
             className="mobile-menu-button"
             onClick={() => setMobileMenu((value) => !value)}
           >
-            â˜°
+            ☰
           </button>
         </div>
       </header>
@@ -426,7 +1833,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
           <div className="hero-content">
             <div className="hero-copy">
               <div className="eyebrow">
-                <span className="spark">âœ¦</span>
+                <span className="spark">✦</span>
                 AI-POWERED DEVELOPMENT
               </div>
 
@@ -446,7 +1853,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
                   onClick={() => openWorkspace("generate")}
                 >
                   Start Coding
-                  <span>â†’</span>
+                  <span>→</span>
                 </button>
 
                 <button
@@ -458,9 +1865,9 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
               </div>
 
               <div className="hero-meta">
-                <span>âœ“ AI Code Generation</span>
-                <span>âœ“ Code Analysis</span>
-                <span>âœ“ Error Fixing</span>
+                <span>✓ AI Code Generation</span>
+                <span>✓ Code Analysis</span>
+                <span>✓ Error Fixing</span>
               </div>
             </div>
 
@@ -468,17 +1875,17 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
               <div className="visual-glow" />
 
               <div className="floating-chip chip-one">
-                <span>âœ¦</span>
+                <span>✦</span>
                 Code Generation
               </div>
 
               <div className="floating-chip chip-two">
-                <span>âŒ•</span>
+                <span>⌕</span>
                 AI Reasoning
               </div>
 
               <div className="floating-chip chip-three">
-                <span>âœ“</span>
+                <span>✓</span>
                 Error Detection
               </div>
 
@@ -569,7 +1976,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
                 <p>{feature.text}</p>
 
                 <div className="feature-arrow">
-                  â†’
+                  →
                 </div>
               </button>
             ))}
@@ -600,7 +2007,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
                 <small>Frontend</small>
               </div>
 
-              <div className="architecture-arrow">â†’</div>
+              <div className="architecture-arrow">→</div>
 
               <div className="architecture-card">
                 <span>02</span>
@@ -608,7 +2015,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
                 <small>Backend</small>
               </div>
 
-              <div className="architecture-arrow">â†’</div>
+              <div className="architecture-arrow">→</div>
 
               <div className="architecture-card">
                 <span>03</span>
@@ -616,7 +2023,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
                 <small>Reasoning</small>
               </div>
 
-              <div className="architecture-arrow">â†’</div>
+              <div className="architecture-arrow">→</div>
 
               <div className="architecture-card">
                 <span>04</span>
@@ -677,7 +2084,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
                 }`}
                 onClick={() => setActiveTab("generate")}
               >
-                <span className="professional-tab-icon">âš¡</span>
+                <span className="professional-tab-icon">⚡</span>
                 <span>Generate</span>
               </button>
 
@@ -687,7 +2094,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
                 }`}
                 onClick={() => setActiveTab("analyze")}
               >
-                <span className="professional-tab-icon">âŒ•</span>
+                <span className="professional-tab-icon">⌕</span>
                 <span>Analyze</span>
               </button>
 
@@ -697,7 +2104,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
                 }`}
                 onClick={() => setActiveTab("fix")}
               >
-                <span className="professional-tab-icon">âœ¦</span>
+                <span className="professional-tab-icon">✦</span>
                 <span>Fix Code</span>
               </button>
 
@@ -742,16 +2149,16 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
                   </span>
 
                   <div className="toolbar-model">
-                    <span>âœ¦</span>
+                    <span>✦</span>
                     Gemini AI
                   </div>
                 </div>
               </div>
 
-              <div className="workspace-editor reference-query-console">
+              <div className="workspace-editor">
                 <div className="editor-topline">
                   <span className="editor-label">
-                    NATURAL LANGUAGE REQUEST
+                    YOUR REQUEST
                   </span>
 
                   <span className="editor-hint">
@@ -877,7 +2284,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
                     disabled={loading}
                   >
                     {loading ? "Processing..." : "Run Agent"}
-                    <span>â†’</span>
+                    <span>→</span>
                   </button>
                 </div>
               </div>
@@ -949,8 +2356,8 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
             <h2>Find anything in your workspace.</h2>
           </div>
 
-          <div className="search-wrapper reference-search-bar">
-            <span className="search-icon">âŒ•</span>
+          <div className="search-wrapper">
+            <span className="search-icon">⌕</span>
 
             <input
               id="global-search"
@@ -968,7 +2375,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
                 className="search-clear"
                 onClick={() => setSearch("")}
               >
-                Ã—
+                ×
               </button>
             )}
 
@@ -998,7 +2405,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
 
               {filteredResults.length === 0 ? (
                 <div className="no-results">
-                  <div>âŒ•</div>
+                  <div>⌕</div>
 
                   <strong>
                     No matching features found.
@@ -1018,9 +2425,9 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
                   >
                     <span className="result-icon">
                       {result.type === "feature"
-                        ? "âœ¦"
+                        ? "✦"
                         : result.type === "example"
-                          ? "âŒ˜"
+                          ? "⌘"
                           : "?"}
                     </span>
 
@@ -1031,7 +2438,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
                     </span>
 
                     <span className="result-arrow">
-                      â†’
+                      →
                     </span>
                   </button>
                 ))
@@ -1061,7 +2468,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
                 className="secondary-button"
                 onClick={() => openWorkspace("generate")}
               >
-                Open Workspace â†’
+                Open Workspace →
               </button>
             </div>
 
@@ -1084,7 +2491,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
                     <span>{faq.question}</span>
 
                     <span className="faq-plus">
-                      {openFaq === index ? "âˆ’" : "+"}
+                      {openFaq === index ? "−" : "+"}
                     </span>
                   </button>
 
@@ -1127,7 +2534,7 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
           </div>
 
           <span className="copyright">
-            Â© 2026 AI Coding Agent
+            © 2026 AI Coding Agent
           </span>
         </div>
       </footer>
