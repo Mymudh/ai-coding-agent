@@ -2160,3 +2160,174 @@ button:disabled {
     border-radius: 12px;
   }
 }
+/* =========================================================
+   FINAL SCROLL + HERO RESPONSIVE FIX
+   ========================================================= */
+
+html,
+body,
+#root {
+  scroll-behavior: auto !important;
+  scroll-snap-type: none !important;
+  scroll-snap-stop: normal !important;
+  overscroll-behavior-y: auto !important;
+}
+
+html *,
+body *,
+#root * {
+  scroll-snap-stop: normal !important;
+}
+
+.app {
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+}
+
+/* Prevent the home section from feeling locked while scrolling */
+.hero {
+  scroll-snap-align: none !important;
+  scroll-snap-stop: normal !important;
+  overflow: visible;
+}
+
+/* Keep the hero centered on large screens */
+@media (min-width: 1101px) {
+  .hero-content {
+    width: min(1320px, calc(100% - 80px));
+    gap: 60px;
+  }
+
+  .hero-visual {
+    width: 100%;
+    max-width: 640px;
+    height: 580px;
+    margin: 0 auto;
+    transform: scale(0.88);
+    transform-origin: center center;
+  }
+
+  .agent-scene {
+    inset: 70px 0 0;
+  }
+
+  .floating-chip {
+    transform-origin: center center;
+  }
+
+  .hero-scroll {
+    pointer-events: none;
+  }
+}
+
+/* Medium desktop / laptop */
+@media (min-width: 801px) and (max-width: 1100px) {
+  .hero-content {
+    width: min(100% - 48px, 900px);
+  }
+
+  .hero-visual {
+    height: 520px;
+    transform: scale(0.86);
+    transform-origin: top center;
+    margin-bottom: -45px;
+  }
+
+  .hero-scroll {
+    pointer-events: none;
+  }
+}
+
+/* Tablet */
+@media (min-width: 621px) and (max-width: 800px) {
+  .hero {
+    min-height: auto;
+    padding-top: 80px;
+    padding-bottom: 70px;
+  }
+
+  .hero-content {
+    width: min(100% - 40px, 700px);
+  }
+
+  .hero-visual {
+    height: 470px;
+    transform: scale(0.78);
+    transform-origin: top center;
+    margin-bottom: -75px;
+  }
+
+  .hero-scroll {
+    pointer-events: none;
+  }
+}
+
+/* Mobile */
+@media (max-width: 620px) {
+  .hero {
+    min-height: auto;
+    padding-top: 70px;
+    padding-bottom: 60px;
+  }
+
+  .hero-content {
+    width: min(100% - 28px, 560px);
+  }
+
+  .hero-visual {
+    height: 380px;
+    transform: scale(0.60);
+    transform-origin: top center;
+    margin-bottom: -125px;
+  }
+
+  .hero-scroll {
+    pointer-events: none;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 420px) {
+  .hero-content {
+    width: calc(100% - 24px);
+  }
+
+  .hero-visual {
+    height: 350px;
+    transform: scale(0.54);
+    margin-bottom: -145px;
+  }
+}
+
+/* Disable unnecessary scroll snapping everywhere */
+section,
+main,
+.hero,
+.features-section,
+.workspace-section,
+.faq-section,
+.footer {
+  scroll-snap-align: none !important;
+  scroll-snap-stop: normal !important;
+}
+
+/* Keep animations from affecting scrolling layout */
+.hero-visual,
+.agent-scene,
+.agent-card,
+.floating-code-card,
+.floating-chip,
+.code-orbit,
+.visual-glow {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Prevent horizontal movement during scrolling */
+html,
+body,
+#root,
+.app {
+  max-width: 100%;
+  overflow-x: clip !important;
+}
