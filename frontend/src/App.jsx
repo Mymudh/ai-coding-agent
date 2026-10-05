@@ -83,13 +83,10 @@ function App() {
   const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [backendOnline, setBackendOnline] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
   const [mobileMenu, setMobileMenu] = useState(false);
 
   useEffect(() => {
-    checkBackend();
-
     const handleKey = (event) => {
       if (
         (event.ctrlKey || event.metaKey) &&
@@ -173,26 +170,6 @@ function App() {
         }))
     ];
   }, [search]);
-
-  async function checkBackend() {
-    try {
-      const controller = new AbortController();
-
-      const timeout = setTimeout(() => {
-        controller.abort();
-      }, 4000);
-
-      const result = await fetch(`${API_URL}/health`, {
-        method: "GET",
-        signal: controller.signal
-      });
-
-      clearTimeout(timeout);
-      setBackendOnline(result.ok);
-    } catch {
-      setBackendOnline(false);
-    }
-  }
 
   function scrollToSection(id) {
     const element = document.getElementById(id);
@@ -298,10 +275,7 @@ function App() {
           : JSON.stringify(data, null, 2)
       );
 
-      setBackendOnline(true);
     } catch (error) {
-      setBackendOnline(false);
-
       setResponse(
         `Backend connection is not available for this operation.
 
@@ -1807,18 +1781,6 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
             </button>
           </nav>
 
-          <div className="nav-status">
-            <span
-              className={`status-dot ${
-                backendOnline ? "online" : "offline"
-              }`}
-            />
-
-            <span>
-              {backendOnline ? "AI Ready" : "Backend Offline"}
-            </span>
-          </div>
-
           <button
             className="mobile-menu-button"
             onClick={() => setMobileMenu((value) => !value)}
@@ -2051,18 +2013,6 @@ Make sure your FastAPI backend is running and that the corresponding endpoint ex
             </div>
 
             <div className="workspace-actions">
-              <div
-                className={`workspace-status-pill ${
-                  backendOnline ? "online" : ""
-                }`}
-              >
-                <span className="status-indicator" />
-
-                {backendOnline
-                  ? "Backend Connected"
-                  : "Backend Offline"}
-              </div>
-
               <button
                 className="workspace-clear"
                 onClick={clearWorkspace}
